@@ -3,8 +3,8 @@
 This is a sample to demonstrate loading of data from an RSS feed (which is an xml feed) to dynamodb and then provide the user with the option to view the data.
 
 Following are the exposed APIs.
-
-1. http://localhost:8080/gobasket/feeds/{action}/merchant1
+<pre>
+1. http://localhost:8080/gobasket/feeds/{action}/merchant1 
   1a. action=load   [loads data from an rss feed]
     usage: http://localhost:8080/gobasket/feeds/load/merchant1
   1b. action=get    [retrieves all the coupons downloaded from the rss feed]
@@ -27,4 +27,6 @@ Deploy Instructions:
     command to create executable: [maven clean install]
     
     The generated jar file is in the target directory.
-    Command to run application: [java -jar HttpFeeder-0.0.1-SNAPSHOT.jar]
+    Command to run application: [java -jar HttpFeeder-0.0.1-SNAPSHOT.jar
+
+</pre>
