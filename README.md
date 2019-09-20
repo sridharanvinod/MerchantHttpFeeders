@@ -27,6 +27,6 @@ Deploy Instructions:
     command to create executable: [maven clean install]
     
     The generated jar file is in the target directory.
-    Command to run application: [java -jar HttpFeeder-0.0.1-SNAPSHOT.jar
+    Command to run application: [java -jar HttpFeeder-0.0.1-SNAPSHOT.jar]
 
 </pre>
