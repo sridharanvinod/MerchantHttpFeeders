@@ -39,17 +39,15 @@ public class MerchantsController {
 		HttpResponse objHttpResponse = null;
 		if(StringUtils.hasText(action) && "get".equalsIgnoreCase(action)){
 			List<Coupon> coupons = merchantFeederServices.getCoupons();
-			objHttpResponse = new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK.name(),"Action: getCouponsAll", coupons);	
-		}
-		if(StringUtils.hasText(action) && "count".equalsIgnoreCase(action)){
-			objHttpResponse = new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK.name(),"Action: getCouponsCount", merchantFeederServices.getCouponsCount());	
-		}
-		if(StringUtils.hasText(action) && "load".equalsIgnoreCase(action)){
+			objHttpResponse = new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK.name(),"Action:["+action+"]", coupons);	
+		}else if(StringUtils.hasText(action) && "count".equalsIgnoreCase(action)){
+			objHttpResponse = new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK.name(),"Action:["+action+"]", merchantFeederServices.getCouponsCount());	
+		}else if(StringUtils.hasText(action) && "load".equalsIgnoreCase(action)){
 			MessagingTemplate mt = new MessagingTemplate();
 			mt.send(httpFeedRequestChannel, new GenericMessage<>("merchant1"));
 			Message<?> message = mt.receive(httpFeedResponseChannel);
-			objHttpResponse = new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK.name(),message.getHeaders().toString(), message.getPayload());
-		}
+			objHttpResponse = new HttpResponse(HttpStatus.CREATED.value(), HttpStatus.CREATED.name(),"Action:["+action+"]:"+message.getHeaders().toString(), message.getPayload());
+		}else objHttpResponse = new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK.name(),"Action:["+action+"]: NOT SUPPORTED", "");
 		return objHttpResponse;
 	}
 	
