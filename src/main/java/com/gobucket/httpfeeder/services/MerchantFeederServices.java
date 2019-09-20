@@ -1,5 +1,6 @@
 package com.gobucket.httpfeeder.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,5 +45,14 @@ public class MerchantFeederServices {
 	}
 	public List<Coupon> getCoupon(String brand) {
 		return couponRepository.findByBrandContains(brand);
+	}
+	public List<Coupon> getCoupons() {
+		Iterable<Coupon> coups = couponRepository.findAll();
+		List<Coupon> coupons = new ArrayList<>();
+		coups.forEach(coupons::add);
+		return coupons;
+	}
+	public long getCouponsCount() {
+		return couponRepository.count();
 	}
 }

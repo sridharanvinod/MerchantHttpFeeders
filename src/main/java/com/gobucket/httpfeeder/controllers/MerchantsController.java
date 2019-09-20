@@ -11,6 +11,7 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.PollableChannel;
 import org.springframework.messaging.support.GenericMessage;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,14 +34,25 @@ public class MerchantsController {
 	@Qualifier("http.feeder.response.channel")
 	PollableChannel httpFeedResponseChannel;
 	
-	@GetMapping(value="/feeds/merchant1", produces = "application/json")
-	public @ResponseBody HttpResponse triggerHttpFeeder() {
-		MessagingTemplate mt = new MessagingTemplate();
-		mt.send(httpFeedRequestChannel, new GenericMessage<>("merchant1"));
-		Message<?> message = mt.receive(httpFeedResponseChannel);
-		HttpResponse objHttpResponse = new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK.name(),message.getHeaders().toString(), message.getPayload());
+	@GetMapping(value="/feeds/{action}/merchant1", produces = "application/json")
+	public @ResponseBody HttpResponse triggerHttpFeeder(@PathVariable String action) {
+		HttpResponse objHttpResponse = null;
+		if(StringUtils.hasText(action) && "get".equalsIgnoreCase(action)){
+			List<Coupon> coupons = merchantFeederServices.getCoupons();
+			objHttpResponse = new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK.name(),"Action: getCouponsAll", coupons);	
+		}
+		if(StringUtils.hasText(action) && "count".equalsIgnoreCase(action)){
+			objHttpResponse = new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK.name(),"Action: getCouponsCount", merchantFeederServices.getCouponsCount());	
+		}
+		if(StringUtils.hasText(action) && "load".equalsIgnoreCase(action)){
+			MessagingTemplate mt = new MessagingTemplate();
+			mt.send(httpFeedRequestChannel, new GenericMessage<>("merchant1"));
+			Message<?> message = mt.receive(httpFeedResponseChannel);
+			objHttpResponse = new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK.name(),message.getHeaders().toString(), message.getPayload());
+		}
 		return objHttpResponse;
 	}
+	
 	@GetMapping(value="/coupons/id/{couponId}")
 	public @ResponseBody Coupon getCoupon(@PathVariable Long couponId) {
 		Optional<Coupon> coupon = merchantFeederServices.getCoupon(couponId);
